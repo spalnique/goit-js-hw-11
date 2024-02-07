@@ -25,10 +25,10 @@ class LoaderSpinner {
 
 class Gallery {
   #markup;
-  constructor(data = [], parentElemQuery = '') {
+  constructor(data = [], requiredProperties = [''], parentElemQuery = '') {
     this.parent = parentElemQuery;
     this.rawData = data;
-    this.cleanData = this.#dataFilter();
+    this.cleanData = this.#dataFilter(requiredProperties);
     this.#markup = this.#createMarkup();
   }
 
@@ -39,19 +39,18 @@ class Gallery {
     return /^[a-z\s]+$/gi.test(userInput.trim());
   }
 
-  #dataFilter(...rest) {
+  #dataFilter(requiredProps) {
     return this.rawData.map(obj => {
       const filtered = {};
-      rest.forEach(keyName => {
+      requiredProps.forEach(keyName => {
         filtered[keyName] = obj[keyName];
       });
-      console.log(filtered);
       return filtered;
     });
   }
 
   #createMarkup() {
-    const markup = this.rawData
+    const markup = this.cleanData
       .map(
         x => `<li class="js-gallery-item">
         <a class="js-image-container" href="${x.largeImageURL}"><img class="js-item-image" src="${x.webformatURL}" alt="${x.alt}" /></a>
@@ -67,8 +66,8 @@ class Gallery {
     return markup;
   }
   renderGallery() {
-    console.log(this);
     document.querySelector(`${this.parent}`).innerHTML = this.#markup;
+    console.log(this);
   }
 }
 
@@ -95,7 +94,6 @@ const spinner = new LoaderSpinner('.js-gallery');
 const iziOptions = {
   class: 'js-izitoast-message',
   titleColor: '#FFFFFF',
-  message: null,
   messageColor: '#FFFFFF',
   messageSize: '16px',
   position: 'topRight',
@@ -111,7 +109,7 @@ const iziOptions = {
       },
     ],
   ],
-  onOpening: function (instance, toast) {
+  onOpening: function (_, toast) {
     refs.container.innerHTML = '';
     refs.input.blur();
     refs.input.addEventListener(
@@ -152,10 +150,24 @@ refs.form.addEventListener('submit', e => {
         refs.form.reset();
         return;
       }
+
+      const gallery = new Gallery(
+        data.hits,
+        [
+          'largeImageURL',
+          'webformatURL',
+          'alt',
+          'likes',
+          'views',
+          'comments',
+          'downloads',
+        ],
+        '.js-gallery'
+      );
       const lightboxInstance = new SimpleLightbox('.js-gallery a', {
         className: 'lightbox-wrapper',
       });
-      const gallery = new Gallery(data.hits, '.js-gallery');
+
       spinner.remove();
       gallery.renderGallery();
       lightboxInstance.refresh();
