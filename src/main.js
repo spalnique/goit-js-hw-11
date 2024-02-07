@@ -97,6 +97,7 @@ const iziOptions = {
   messageColor: '#FFFFFF',
   messageSize: '16px',
   position: 'topRight',
+  display: 'replace',
   iconUrl: rejectedIcon,
   close: false,
   buttons: [
@@ -111,6 +112,15 @@ const iziOptions = {
     refs.container.innerHTML = '';
     refs.input.blur();
     refs.input.addEventListener(
+      'focus',
+      () => {
+        iziToast.hide({ transitionOut: 'fadeOut' }, toast);
+      },
+      { once: true }
+    );
+  },
+  onClosed: function (_, toast) {
+    refs.input.removeEventListener(
       'focus',
       () => {
         iziToast.hide({ transitionOut: 'fadeOut' }, toast);
