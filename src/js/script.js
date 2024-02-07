@@ -25,7 +25,7 @@ function renderGallery(markup) {
 }
 
 function processingRequest() {
-  refs.container.innerHTML = 'Loading images, please wait...';
+  
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -83,7 +83,9 @@ refs.form.addEventListener('submit', e => {
         iziToast.show(iziOptions);
         return;
       }
-      renderGallery(createMarkup(data.hits));
+      setTimeout(() => {
+        renderGallery(createMarkup(data.hits));
+      }, 3000);
       gallery.refresh();
     })
     .catch(error => console.log(error));
