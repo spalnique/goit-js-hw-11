@@ -13,13 +13,13 @@ class LoaderSpinner {
     this.#previousHTML = '';
   }
   add() {
-    this.#previousHTML = document.querySelector(`${this.parent}`).innerHTML;
-    document.querySelector(`${this.parent}`).innerHTML =
+    this.#previousHTML = document.querySelector(this.parent).innerHTML;
+    document.querySelector(this.parent).innerHTML =
       '<div id="spinner-container" style="display:flex; flex-direction:column; gap:15px; align-items:center;"><span class="js-processing-request">Loading images, please wait...</span><span class="loader"></span></div>';
   }
 
   remove() {
-    document.querySelector(`${this.parent}`).innerHTML = this.#previousHTML;
+    document.querySelector(this.parent).innerHTML = this.#previousHTML;
   }
 }
 
@@ -66,7 +66,7 @@ class Gallery {
     return markup;
   }
   renderGallery() {
-    document.querySelector(`${this.parent}`).innerHTML = this.#markup;
+    document.querySelector(this.parent).innerHTML = this.#markup;
     console.log(this);
   }
 }
@@ -121,6 +121,14 @@ const iziOptions = {
     );
   },
 };
+
+refs.input.addEventListener('input', e => {
+  if (!/^[a-z\s]+$/gi.test(e.target.value)) {
+    setTimeout(() => {
+      e.target.value = e.target.value.slice(0, -1);
+    }, 100);
+  }
+});
 
 refs.form.addEventListener('submit', e => {
   e.preventDefault();
