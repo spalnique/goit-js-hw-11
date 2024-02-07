@@ -5,6 +5,7 @@ import 'simplelightbox/dist/simple-lightbox.min.css';
 import rejectedIcon from './img/rejectedIcon.svg';
 import closeIcon from './img/izitoast-close.svg';
 
+
 class LoaderSpinner {
   #previousHTML;
 
@@ -53,7 +54,7 @@ class Gallery {
     const markup = this.cleanData
       .map(
         x => `<li class="js-gallery-item">
-        <a class="js-image-container" href="${x.largeImageURL}"><img class="js-item-image" src="${x.webformatURL}" alt="${x.alt}" /></a>
+        <a class="js-image-container" href="${x.largeImageURL}"><img class="js-item-image" src="${x.webformatURL}" alt="${x.tags}" /></a>
         <ul class="js-item-desc">
           <li class="js-desc-wrapper"><span class="js-desc-prop">Likes</span><span class="js-desc-value">${x.likes}</span></li>
           <li class="js-desc-wrapper"><span class="js-desc-prop">Views</span><span class="js-desc-value">${x.views}</span></li>
@@ -97,8 +98,6 @@ const iziOptions = {
   messageColor: '#FFFFFF',
   messageSize: '16px',
   position: 'topRight',
-  backgroundColor: '#EF4040',
-  progressBarColor: '#B51B1B',
   iconUrl: rejectedIcon,
   close: false,
   buttons: [
@@ -122,29 +121,32 @@ const iziOptions = {
   },
 };
 
-refs.input.addEventListener('input', e => {
-  if (!/^[a-z\s]+$/gi.test(e.target.value)) {
-    setTimeout(() => {
-      e.target.value = e.target.value.slice(0, -1);
-    }, 100);
-  }
-});
+// Закоментований код нижче був зроблений виключно у дослідницьких цілях :)
+
+// refs.input.addEventListener('input', e => {
+//   if (!/^[a-z\s]+$/gi.test(e.target.value)) {
+//     setTimeout(() => {
+//       e.target.value = e.target.value.slice(0, -1);
+//     }, 100);
+//   }
+// });
 
 refs.form.addEventListener('submit', e => {
   e.preventDefault();
   requestParams.q = refs.input.value.trim();
 
   if (!Gallery.testInput(refs.input.value.trim())) {
-    (iziOptions.message =
-      'Try something like "kitty", "best friends", "on the Moon" ;)'),
-      iziToast.show(iziOptions);
+    iziOptions.message =
+      'Try something like "kitty", "best friends", "on the Moon" ;)';
+    iziOptions.backgroundColor = '#e0c34c';
+    iziOptions.progressBarColor = '#f7e28b';
+    iziToast.show(iziOptions);
     refs.form.reset();
     return;
   }
 
   fetch(`${requestUrl}?${new URLSearchParams(requestParams)}`)
     .then(response => {
-      spinner.add();
       if (!response.ok) {
         throw new Error('Something went wrong!');
       }
@@ -152,19 +154,21 @@ refs.form.addEventListener('submit', e => {
     })
     .then(data => {
       if (!data.hits.length) {
-        (iziOptions.message =
-          'Sorry, there are no images matching your search query. Please try again!'),
-          iziToast.show(iziOptions);
+        iziOptions.message =
+          'Sorry, there are no images matching your search query. Please try again!';
+        iziOptions.backgroundColor = '#EF4040';
+        iziOptions.progressBarColor = '#B51B1B';
+        iziToast.show(iziOptions);
         refs.form.reset();
         return;
       }
-
+      spinner.add();
       const gallery = new Gallery(
         data.hits,
         [
           'largeImageURL',
           'webformatURL',
-          'alt',
+          'tags',
           'likes',
           'views',
           'comments',
