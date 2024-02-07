@@ -97,9 +97,11 @@ const iziOptions = {
   messageColor: '#FFFFFF',
   messageSize: '16px',
   position: 'topRight',
-  display: 'replace',
+  displayMode: 'replace',
+  pauseOnHover: false,
   iconUrl: rejectedIcon,
   close: false,
+
   buttons: [
     [
       `<button type="button" style="background-color: transparent;"><img src=${closeIcon}></button>`,
