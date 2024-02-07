@@ -16,7 +16,6 @@ function createMarkup(data) {
         </ul>
       </li>`
     )
-    .slice(0, -2)
     .join('\n\n');
   return markup;
 }
@@ -36,6 +35,10 @@ const refs = {
   input: document.querySelector('.js-search-input'),
   container: document.querySelector('.js-gallery'),
 };
+
+const gallery = new SimpleLightbox('.js-gallery a', {
+  className: 'lightbox-wrapper',
+});
 
 const requestUrl = 'https://pixabay.com/api/';
 const requestParams = {
@@ -67,9 +70,6 @@ refs.form.addEventListener('submit', e => {
   requestParams.q = refs.input.value;
   e.preventDefault();
   processingRequest();
-  const gallery = new SimpleLightbox('.js-gallery a', {
-    className: 'lightbox-wrapper',
-  });
 
   fetch(`${requestUrl}?${new URLSearchParams(requestParams)}`)
     .then(response => {
