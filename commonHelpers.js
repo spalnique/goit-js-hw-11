@@ -6,7 +6,7 @@ import{S as l,i as p}from"./assets/vendor-5b791d57.js";(function(){const a=docum
           <li class="js-desc-wrapper"><span class="js-desc-prop">Comments</span><span class="js-desc-value">${e.comments}</span></li>
           <li class="js-desc-wrapper"><span class="js-desc-prop">Downloads</span><span class="js-desc-value">${e.downloads}</span></li>
         </ul>
-      </li>`).join(`
+      </li>`).slice(0,-2).join(`
 
 `)}function m(t){o.container.innerHTML=t}function d(){o.container.innerHTML="Loading images, please wait..."}const o={form:document.querySelector(".js-search-form"),input:document.querySelector(".js-search-input"),container:document.querySelector(".js-gallery")},f="https://pixabay.com/api/",c={key:"42242477-df8643eaa45736c853493b589",image_type:"photo",orientation:"horizontal",safesearch:!0,q:null},g={class:"js-izitoast-message",titleColor:"#FFFFFF",message:"Sorry, there are no images matching your search query. Please try again!",messageColor:"#FFFFFF",messageSize:"16px",position:"topRight",backgroundColor:"#EF4040",progressBarColor:"#B51B1B",close:!1,onOpening:()=>{o.container.innerHTML="Please, try a different request"}};o.form.addEventListener("submit",t=>{c.q=o.input.value,t.preventDefault(),d();const a=new l(".js-gallery a",{className:"lightbox-wrapper"});fetch(`${f}?${new URLSearchParams(c)}`).then(e=>{if(!e.ok)throw new Error("Something went wrong!");return e.json()}).then(e=>{if(!e.hits.length){p.show(g);return}m(u(e.hits)),a.refresh()}).catch(e=>console.log(e)),o.form.reset()});
 //# sourceMappingURL=commonHelpers.js.map
