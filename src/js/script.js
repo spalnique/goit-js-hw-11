@@ -16,6 +16,7 @@ function createMarkup(data) {
         </ul>
       </li>`
     )
+    .slice(0, -2)
     .join('\n\n');
   return markup;
 }
