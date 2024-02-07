@@ -10,16 +10,14 @@ class LoaderSpinner {
 
   constructor(parentElemQuery = '') {
     this.parent = parentElemQuery;
-    this.#previousHTML = '';
   }
   add() {
-    this.#previousHTML = document.querySelector(this.parent).innerHTML;
     document.querySelector(this.parent).innerHTML =
       '<div id="spinner-container" style="display:flex; flex-direction:column; gap:15px; align-items:center;"><span class="js-processing-request">Loading images, please wait...</span><span class="loader"></span></div>';
   }
 
   remove() {
-    document.querySelector(this.parent).innerHTML = this.#previousHTML;
+    document.querySelector(this.parent).innerHTML = '';
   }
 }
 
@@ -155,6 +153,7 @@ refs.form.addEventListener('submit', e => {
     refs.form.reset();
     return;
   }
+  spinner.add();
 
   fetch(`${requestUrl}?${new URLSearchParams(requestParams)}`)
     .then(response => {
@@ -173,7 +172,6 @@ refs.form.addEventListener('submit', e => {
         refs.form.reset();
         return;
       }
-      spinner.add();
       const gallery = new Gallery(
         data.hits,
         [
