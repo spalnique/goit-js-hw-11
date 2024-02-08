@@ -155,7 +155,6 @@ refs.form.addEventListener('submit', e => {
     refs.form.reset();
     return;
   }
-  refs.form.classList.remove('centered');
   spinner.add();
 
   fetch(`${requestUrl}?${new URLSearchParams(requestParams)}`)
@@ -172,6 +171,7 @@ refs.form.addEventListener('submit', e => {
         refs.form.reset();
         return;
       }
+      refs.form.classList.remove('centered');
       const gallery = new Gallery(
         data.hits,
         [
@@ -190,7 +190,6 @@ refs.form.addEventListener('submit', e => {
       });
 
       spinner.remove();
-      refs.form.classList.remove('centered');
       gallery.renderGallery();
       lightboxInstance.refresh();
       refs.form.reset();
