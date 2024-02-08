@@ -149,6 +149,7 @@ refs.form.addEventListener('submit', e => {
       'Try something like "kitty", "best friends", "on the Moon" ;)';
     iziOptions.backgroundColor = '#e0c34c';
     iziOptions.progressBarColor = '#f7e28b';
+    refs.form.classList.add('centered');
     iziToast.show(iziOptions);
     refs.form.reset();
     return;
