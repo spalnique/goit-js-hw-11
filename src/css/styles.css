@@ -81,7 +81,7 @@ button {
 
 .js-search-form {
   position: absolute;
-  top: 50px;
+  top: 25px;
   left: 50%;
   transform: translate(-50%, 0);
   display: flex;
