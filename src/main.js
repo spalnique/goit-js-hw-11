@@ -137,13 +137,13 @@ const spinner = new Spinner('.js-gallery');
 
 // Код нижче був зроблений виключно у дослідницьких цілях
 
-refs.input.addEventListener('input', e => {
-  if (!/^[a-z\s]+$/gi.test(e.target.value)) {
-    setTimeout(() => {
-      e.target.value = e.target.value.slice(0, -1);
-    }, 100);
-  }
-});
+// refs.input.addEventListener('input', e => {
+//  if (!/^[a-z\s]+$/gi.test(e.target.value)) {
+//    setTimeout(() => {
+//      e.target.value = e.target.value.slice(0, -1);
+//    }, 100);
+//  }
+// });
 
 refs.form.addEventListener('submit', e => {
   e.preventDefault();
