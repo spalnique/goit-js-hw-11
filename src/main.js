@@ -153,6 +153,7 @@ refs.form.addEventListener('submit', e => {
     refs.form.reset();
     return;
   }
+  refs.form.classList.remove('centered');
   spinner.add();
 
   fetch(`${requestUrl}?${new URLSearchParams(requestParams)}`)
@@ -169,6 +170,7 @@ refs.form.addEventListener('submit', e => {
         iziOptions.backgroundColor = '#EF4040';
         iziOptions.progressBarColor = '#B51B1B';
         iziToast.show(iziOptions);
+        refs.form.classList.add('centered');
         refs.form.reset();
         return;
       }
