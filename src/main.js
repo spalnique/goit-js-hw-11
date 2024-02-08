@@ -13,7 +13,7 @@ class Spinner {
   }
   add() {
     document.querySelector(this.parent).innerHTML =
-      '<div id="spinner-container" style="display:flex; flex-direction:column; gap:15px; align-items:center;"><span class="js-processing-request">Loading images, please wait...</span><span class="loader"></span></div>';
+      '<div id="spinner-container" style="padding-top: 25px; display:flex; flex-direction:column; gap:15px; align-items:center;"><span class="js-processing-request">Loading images, please wait...</span><span class="loader"></span></div>';
   }
 
   remove() {
