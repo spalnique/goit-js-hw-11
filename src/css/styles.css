@@ -80,6 +80,7 @@ button {
 }
 
 .js-search-form {
+  position: static;
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
