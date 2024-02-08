@@ -5,7 +5,7 @@ import 'simplelightbox/dist/simple-lightbox.min.css';
 import rejectedIcon from './img/rejectedIcon.svg';
 import closeIcon from './img/izitoast-close.svg';
 
-class LoaderSpinner {
+class Spinner {
   #previousHTML;
 
   constructor(parentElemQuery = '') {
@@ -87,7 +87,7 @@ const requestParams = {
   q: null,
 };
 
-const spinner = new LoaderSpinner('.js-gallery');
+const spinner = new Spinner('.js-gallery');
 
 const iziOptions = {
   class: 'js-izitoast-message',
