@@ -6,27 +6,65 @@ import rejectedIcon from './img/rejectedIcon.svg';
 import closeIcon from './img/izitoast-close.svg';
 
 class Spinner {
-  constructor(parentElemQuery = '') {
+  constructor(parentElemQuery) {
     this.parent = parentElemQuery;
   }
+
+  /**
+   * @description Adds a spinner to the page.
+   */
+
   add() {
     document.querySelector(this.parent).innerHTML =
       '<div id="spinner-container" style="padding-top: 25px; display:flex; flex-direction:column; gap:15px; align-items:center;"><span class="js-processing-request">Loading images, please wait...</span><span class="loader"></span></div>';
   }
+
+  /**
+   * @description Removes previously added spinner from the page.
+   */
 
   remove() {
     document.querySelector(this.parent).innerHTML = '';
   }
 }
 
+/**
+ * @param {array} data Expects an array of objects containing image data.
+ * @param {string} parentElemQuery Expects a string containing DOM element query (class, id, etc).
+ * @param {array} imgProperties Expects an array of three image properties to look for in data (largeImageURL, thumbnailURL, altText).
+ * @param {array} descProperties Expects an array of additional description properties to look for in data (downloads, size, comments, etc).
+ * @param {boolean} showDetails Expects a boolean value to render detailed information or not.
+ */
+
 class Gallery {
   #markup;
-  constructor(data = [], requiredProperties = [''], parentElemQuery = '') {
-    this.parent = parentElemQuery;
+  #imgProperties;
+  #descProperties;
+  #imgData;
+  #descData;
+  #showDetails;
+
+  constructor(
+    data = [],
+    parentElemQuery = '',
+    imgProperties = [],
+    descProperties = [],
+    showDetails
+  ) {
     this.rawData = data;
-    this.cleanData = this.#dataFilter(requiredProperties);
-    this.#markup = this.#createMarkup();
+    this.parent = parentElemQuery;
+    this.#imgProperties = imgProperties;
+    this.#descProperties = descProperties;
+    this.#showDetails = showDetails;
+    this.#imgData = this.#dataFilter(this.rawData, this.#imgProperties);
+    this.#descData = this.#dataFilter(this.rawData, this.#descProperties);
+    this.#markup = this.#createMarkup(this.#imgData, this.#descData);
   }
+
+  /**
+   * @param {string} userInput Expects string value for testing.
+   * @returns {boolean} Returns true or false.
+   */
 
   static testInput(userInput) {
     if (!userInput.trim()) {
@@ -36,7 +74,8 @@ class Gallery {
   }
 
   /**
-   * @param {string} result Accepts one of two strings: 'wrong input' | 'nothing found'
+   * @param {string} result Accepts one of two strings: 'wrong input' | 'nothing found'.
+   * @description Displays a popup area providing user with a feedback from the app.
    */
 
   static showPopup(result) {
@@ -89,45 +128,90 @@ class Gallery {
     iziToast.show(options);
   }
 
-  #dataFilter(requiredProps) {
-    return this.rawData.map(obj => {
+  /**
+   * @param {array} data Expects an array of objects of raw data as a result of fetch operation.
+   * @param {array} propsList Expects an array of strings indicating which properties to filter out of raw data.
+   * @returns {object} Returns an array of objects with requested properties only.
+   */
+
+  #dataFilter(data, propsList) {
+    return data.map(obj => {
       const filtered = {};
-      requiredProps.forEach(keyName => {
+      propsList.forEach(keyName => {
         filtered[keyName] = obj[keyName];
       });
       return filtered;
     });
   }
 
-  #createMarkup() {
-    const markup = this.cleanData
+  /**
+   * @param {array} img Expects an array of objects containing information related to each image, and alternative text to be shown.
+   * @param {array} desc Expects an array of objects containing information related to each image description.
+   * @returns {string} Returns a ready for use markup with or without image description.
+   */
+
+  #createMarkup(img, desc) {
+    const imgDesc = this.#showDetails
+      ? desc.map(
+          x =>
+            `<ul class="js-item-desc">
+            <li class="js-desc-wrapper">
+              <span class="js-desc-prop">Likes</span>
+              <span class="js-desc-value">${x.likes}</span>
+            </li>
+            <li class="js-desc-wrapper">
+              <span class="js-desc-prop">Views</span>
+              <span class="js-desc-value">${x.views}</span>
+            </li>
+            <li class="js-desc-wrapper">
+              <span class="js-desc-prop">Comments</span>
+              <span class="js-desc-value">${x.comments}</span>
+            </li>
+            <li class="js-desc-wrapper">
+              <span class="js-desc-prop">Downloads</span>
+              <span class="js-desc-value">${x.downloads}</span>
+            </li>
+          </ul>`
+        )
+      : '';
+
+    const markup = img
       .map(
-        x => `<li class="js-gallery-item">
-        <a class="js-image-container" href="${x.largeImageURL}"><img class="js-item-image" src="${x.webformatURL}" alt="${x.tags}" /></a>
-        <ul class="js-item-desc">
-          <li class="js-desc-wrapper"><span class="js-desc-prop">Likes</span><span class="js-desc-value">${x.likes}</span></li>
-          <li class="js-desc-wrapper"><span class="js-desc-prop">Views</span><span class="js-desc-value">${x.views}</span></li>
-          <li class="js-desc-wrapper"><span class="js-desc-prop">Comments</span><span class="js-desc-value">${x.comments}</span></li>
-          <li class="js-desc-wrapper"><span class="js-desc-prop">Downloads</span><span class="js-desc-value">${x.downloads}</span></li>
-        </ul>
-      </li>`
+        (x, i) =>
+          `<li class="js-gallery-item"><a class="js-image-container" href="${
+            x.largeImageURL
+          }"><img class="js-item-image" src="${x.webformatURL}" alt="${
+            x.tags
+          }" /></a>${imgDesc ? imgDesc[i] : ''}</li>`
       )
       .join('\n\n');
     return markup;
   }
 
-  renderGallery() {
+  /**
+   * @description Adds new markup to the parent element.
+   */
+
+  render() {
     document.querySelector(this.parent).innerHTML = this.#markup;
-    console.log(this);
+    const images = document.querySelectorAll('.js-item-image');
+    images.forEach((x, i) =>
+      x.addEventListener('load', () => {
+        document
+          .querySelectorAll('.js-gallery-item')
+          [i].classList.add('visible');
+      })
+    );
   }
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////
 
 const refs = {
   form: document.querySelector('.js-search-form'),
   input: document.querySelector('.js-search-input'),
   container: document.querySelector('.js-gallery'),
+  checkbox: document.querySelector('.js-search-checkbox'),
 };
 
 const requestUrl = 'https://pixabay.com/api/';
@@ -181,23 +265,17 @@ refs.form.addEventListener('submit', e => {
       refs.form.classList.remove('centered');
       const gallery = new Gallery(
         data.hits,
-        [
-          'largeImageURL',
-          'webformatURL',
-          'tags',
-          'likes',
-          'views',
-          'comments',
-          'downloads',
-        ],
-        '.js-gallery'
+        '.js-gallery',
+        ['largeImageURL', 'webformatURL', 'tags'],
+        ['likes', 'views', 'comments', 'downloads'],
+        refs.checkbox.checked
       );
       const lightboxInstance = new SimpleLightbox('.js-gallery a', {
         className: 'lightbox-wrapper',
       });
 
       spinner.remove();
-      gallery.renderGallery();
+      gallery.render();
       lightboxInstance.refresh();
       refs.form.reset();
     })

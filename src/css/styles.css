@@ -89,8 +89,8 @@ button {
   gap: 20px;
   justify-content: center;
   transition: transform 250ms cubic-bezier(0.47, 0, 0.745, 0.715),
-  top 250ms cubic-bezier(0.47, 0, 0.745, 0.715),
-  left 250ms cubic-bezier(0.47, 0, 0.745, 0.715);
+    top 250ms cubic-bezier(0.47, 0, 0.745, 0.715),
+    left 250ms cubic-bezier(0.47, 0, 0.745, 0.715);
 }
 
 .js-search-input {
@@ -113,6 +113,19 @@ button {
   border-color: #4e75ff;
 }
 
+.js-checkbox-container {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.js-search-checkbox {
+  width: 20px;
+  height: 20px;
+  accent-color: #4e75ff;
+}
+
 .js-gallery {
   display: flex;
   justify-content: center;
@@ -124,16 +137,13 @@ button {
 }
 
 .js-gallery-item {
-  /* max-width: 420px; */
-  /* flex-basis: calc((100% - 2 * 24px) / 3); */
-  filter: grayscale();
-  transition: scale 200ms cubic-bezier(0.47, 0, 0.745, 0.715),
-    box-shadow 200ms cubic-bezier(0.47, 0, 0.745, 0.715),
-    filter 400ms cubic-bezier(0.47, 0, 0.745, 0.715);
-  /* border: 0.1px solid #aeaeae; */
   border-radius: 5px;
   overflow: hidden;
   box-shadow: 0px 0px 10px 0px rgba(38, 38, 38, 0.15);
+  opacity: 0;
+  transition: box-shadow 250ms cubic-bezier(0.47, 0, 0.745, 0.715),
+    opacity 250ms cubic-bezier(0.47, 0, 0.745, 0.715),
+    scale 250ms cubic-bezier(0.47, 0, 0.745, 0.715);
 }
 
 .js-image-container {
@@ -147,13 +157,19 @@ button {
   object-fit: cover;
   width: 100%;
   height: 100%;
+  filter: grayscale();
+  transition: filter 250ms cubic-bezier(0.47, 0, 0.745, 0.715);
 }
 
 .js-gallery-item:hover,
 .js-gallery-item:focus {
-  filter: none;
   scale: 1.02;
   box-shadow: 0px 0px 20px 0px rgba(38, 38, 38, 0.3);
+}
+
+.js-gallery-item:hover .js-item-image,
+.js-gallery-item:focus .js-item-image {
+  filter: none;
 }
 
 .js-item-desc {
@@ -168,16 +184,17 @@ button {
   flex-direction: column;
   gap: 8px;
   align-items: center;
-  font-size: 12px;
 }
 
 .js-desc-prop {
+  font-size: 12px;
   font-weight: 500;
   line-height: 1.33;
   letter-spacing: 0.04em;
 }
 
 .js-desc-value {
+  font-size: 12px;
   font-weight: 400;
   line-height: 1.33;
   letter-spacing: 0.04em;
@@ -186,6 +203,10 @@ button {
 .centered {
   top: 50%;
   transform: translate(-50%, -50%);
+}
+
+.visible {
+  opacity: 1;
 }
 
 .loader {
