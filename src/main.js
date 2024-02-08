@@ -192,6 +192,7 @@ refs.form.addEventListener('submit', e => {
       });
 
       spinner.remove();
+      refs.form.classList.remove('centered');
       gallery.renderGallery();
       lightboxInstance.refresh();
       refs.form.reset();
