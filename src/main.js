@@ -6,8 +6,6 @@ import rejectedIcon from './img/rejectedIcon.svg';
 import closeIcon from './img/izitoast-close.svg';
 
 class Spinner {
-  #previousHTML;
-
   constructor(parentElemQuery = '') {
     this.parent = parentElemQuery;
   }
@@ -37,6 +35,60 @@ class Gallery {
     return /^[a-z\s]+$/gi.test(userInput.trim());
   }
 
+  /**
+   * @param {string} result Accepts one of two strings: 'wrong input' | 'nothing found'
+   */
+
+  static showPopup(result) {
+    const options = {
+      class: 'js-izitoast-message',
+      titleColor: '#FFFFFF',
+      messageColor: '#FFFFFF',
+      message:
+        result === 'wrong input'
+          ? 'Try something like "kitty", "best friends", "on the Moon" ;)'
+          : 'Sorry, there are no images matching your search query. Please try again!',
+      backgroundColor: result === 'wrong input' ? '#e0c34c' : '#ef4040',
+      progressBarColor: result === 'wrong input' ? '#f7e28b' : '#b51b1b',
+      messageSize: '16px',
+      position: 'topRight',
+      displayMode: 'replace',
+      pauseOnHover: false,
+      iconUrl: rejectedIcon,
+      close: false,
+
+      buttons: [
+        [
+          `<button type="button" style="background-color: transparent;"><img src=${closeIcon}></button>`,
+          function (instance, toast) {
+            instance.hide({ transitionOut: 'fadeOut' }, toast);
+          },
+        ],
+      ],
+      onOpening: function (_, toast) {
+        refs.container.innerHTML = '';
+        refs.input.blur();
+        refs.input.addEventListener(
+          'focus',
+          () => {
+            iziToast.hide({ transitionOut: 'fadeOut' }, toast);
+          },
+          { once: true }
+        );
+      },
+      onClosed: function (_, toast) {
+        refs.input.removeEventListener(
+          'focus',
+          () => {
+            iziToast.hide({ transitionOut: 'fadeOut' }, toast);
+          },
+          { once: true }
+        );
+      },
+    };
+    iziToast.show(options);
+  }
+
   #dataFilter(requiredProps) {
     return this.rawData.map(obj => {
       const filtered = {};
@@ -63,55 +115,10 @@ class Gallery {
       .join('\n\n');
     return markup;
   }
+
   renderGallery() {
     document.querySelector(this.parent).innerHTML = this.#markup;
     console.log(this);
-  }
-  static showPopup(result = 'wrong input' || 'nothing found') {
-    const options = {
-  class: 'js-izitoast-message',
-  titleColor: '#FFFFFF',
-  messageColor: '#FFFFFF',
-  message: result === 'wrong input' ? 'Try something like "kitty", "best friends", "on the Moon" ;)' : 'Sorry, there are no images matching your search query. Please try again!',
-  backgroundColor = result === 'wrong input'? '#e0c34c' : '#ef4040',
-  progressBarColor = result === 'wrong input'? '#f7e28b' : '#b51b1b',
-  messageSize: '16px',
-  position: 'topRight',
-  displayMode: 'replace',
-  pauseOnHover: false,
-  iconUrl: rejectedIcon,
-  close: false,
-
-  buttons: [
-    [
-      `<button type="button" style="background-color: transparent;"><img src=${closeIcon}></button>`,
-      function (instance, toast) {
-        instance.hide({ transitionOut: 'fadeOut' }, toast);
-      },
-    ],
-  ],
-  onOpening: function (_, toast) {
-    refs.container.innerHTML = '';
-    refs.input.blur();
-    refs.input.addEventListener(
-      'focus',
-      () => {
-        iziToast.hide({ transitionOut: 'fadeOut' }, toast);
-      },
-      { once: true }
-    );
-  },
-  onClosed: function (_, toast) {
-    refs.input.removeEventListener(
-      'focus',
-      () => {
-        iziToast.hide({ transitionOut: 'fadeOut' }, toast);
-      },
-      { once: true }
-    );
-  },
-};
-iziToast.show(options);
   }
 }
 
