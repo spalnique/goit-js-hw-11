@@ -67,32 +67,14 @@ class Gallery {
     document.querySelector(this.parent).innerHTML = this.#markup;
     console.log(this);
   }
-}
-
-//////////////////////////////////////////////////////////////////////////////////////////
-
-const refs = {
-  form: document.querySelector('.js-search-form'),
-  input: document.querySelector('.js-search-input'),
-  container: document.querySelector('.js-gallery'),
-};
-
-const requestUrl = 'https://pixabay.com/api/';
-
-const requestParams = {
-  key: '42242477-df8643eaa45736c853493b589',
-  image_type: 'photo',
-  orientation: 'horizontal',
-  safesearch: true,
-  q: null,
-};
-
-const spinner = new Spinner('.js-gallery');
-
-const iziOptions = {
+  static showPopup(result = 'wrong input' || 'nothing found') {
+    const options = {
   class: 'js-izitoast-message',
   titleColor: '#FFFFFF',
   messageColor: '#FFFFFF',
+  message: result === 'wrong input' ? 'Try something like "kitty", "best friends", "on the Moon" ;)' : 'Sorry, there are no images matching your search query. Please try again!',
+  backgroundColor = result === 'wrong input'? '#e0c34c' : '#ef4040',
+  progressBarColor = result === 'wrong input'? '#f7e28b' : '#b51b1b',
   messageSize: '16px',
   position: 'topRight',
   displayMode: 'replace',
@@ -129,6 +111,29 @@ const iziOptions = {
     );
   },
 };
+iziToast.show(options);
+  }
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+
+const refs = {
+  form: document.querySelector('.js-search-form'),
+  input: document.querySelector('.js-search-input'),
+  container: document.querySelector('.js-gallery'),
+};
+
+const requestUrl = 'https://pixabay.com/api/';
+
+const requestParams = {
+  key: '42242477-df8643eaa45736c853493b589',
+  image_type: 'photo',
+  orientation: 'horizontal',
+  safesearch: true,
+  q: null,
+};
+
+const spinner = new Spinner('.js-gallery');
 
 // Код нижче був зроблений виключно у дослідницьких цілях
 
@@ -145,12 +150,8 @@ refs.form.addEventListener('submit', e => {
   requestParams.q = refs.input.value.trim();
 
   if (!Gallery.testInput(refs.input.value.trim())) {
-    iziOptions.message =
-      'Try something like "kitty", "best friends", "on the Moon" ;)';
-    iziOptions.backgroundColor = '#e0c34c';
-    iziOptions.progressBarColor = '#f7e28b';
     refs.form.classList.add('centered');
-    iziToast.show(iziOptions);
+    Gallery.showPopup('wrong input');
     refs.form.reset();
     return;
   }
@@ -166,12 +167,8 @@ refs.form.addEventListener('submit', e => {
     })
     .then(data => {
       if (!data.hits.length) {
-        iziOptions.message =
-          'Sorry, there are no images matching your search query. Please try again!';
-        iziOptions.backgroundColor = '#EF4040';
-        iziOptions.progressBarColor = '#B51B1B';
-        iziToast.show(iziOptions);
         refs.form.classList.add('centered');
+        Gallery.showPopup('nothing found');
         refs.form.reset();
         return;
       }
